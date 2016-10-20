@@ -1,6 +1,7 @@
 from nltk.corpus import cess_esp
 from nltk.tag import hmm
 from nltk.tag import tnt
+from random import shuffle
 
 def reduce(full_sents):
     red_sents = []
@@ -43,12 +44,30 @@ def crossValidationTnT():
         print(p1,p2)
         tagger = tnt.TnT()
         tagger.train(rsents[:p1]+rsents[p2:])
-        precision += tagger.evaluate(rsents[p1:p2])
+        precisionK = tagger.evaluate(rsents[p1:p2])
+        print("Precision con particion {} = {}".format(i+1, precisionK))
+        precision += precisionK
+    print(precision/10)
+
+def crossValidationHMM():
+    numSents = len(rsents)
+    precision = 0.0
+    for i in range(10):
+        p1 = int(i*numSents/10)
+        p2 = int((i+1)*numSents/10)
+        print(p1,p2)
+        trainer = hmm.HiddenMarkovModelTrainer()
+        model = trainer.train(rsents[:p1]+rsents[p2:])
+        precisionK = model.evaluate(rsents[p1:p2])
+        print("Precision con particion {} = {}".format(i+1, precisionK))
+        precision += precisionK
     print(precision/10)
 
 fsents = cess_esp.tagged_sents()
 rsents = reduce(fsents)
+shuffle(rsents)
 
-crossValidationTnT()
+#crossValidationTnT()
+crossValidationHMM()
 
 
