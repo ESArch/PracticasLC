@@ -29,11 +29,11 @@ def evaluateTnT():
     print(precisionTnT)
 
 def evaluateHMM():
-    trainer = hmm.HiddenMarkovModelTrainer()
-    train = int(len(fsents)*0.9)
-    model = trainer.train(rsents[:train])
-    precisionHMM = model.evaluate(rsents[train:])
+    train = int(len(fsents) * 0.9)
+    tagger = hmm.HiddenMarkovModelTagger.train(rsents[:train])
+    precisionHMM = tagger.evaluate(rsents[train:])
     print(precisionHMM)
+
 
 def crossValidationTnT():
     numSents = len(rsents)
@@ -41,7 +41,6 @@ def crossValidationTnT():
     for i in range(10):
         p1 = int(i*numSents/10)
         p2 = int((i+1)*numSents/10)
-        print(p1,p2)
         tagger = tnt.TnT()
         tagger.train(rsents[:p1]+rsents[p2:])
         precisionK = tagger.evaluate(rsents[p1:p2])
@@ -55,10 +54,8 @@ def crossValidationHMM():
     for i in range(10):
         p1 = int(i*numSents/10)
         p2 = int((i+1)*numSents/10)
-        print(p1,p2)
-        trainer = hmm.HiddenMarkovModelTrainer()
-        model = trainer.train(rsents[:p1]+rsents[p2:])
-        precisionK = model.evaluate(rsents[p1:p2])
+        tagger = hmm.HiddenMarkovModelTagger.train(rsents[:p1]+rsents[p2:])
+        precisionK = tagger.evaluate(rsents[p1:p2])
         print("Precision con particion {} = {}".format(i+1, precisionK))
         precision += precisionK
     print(precision/10)
@@ -66,6 +63,12 @@ def crossValidationHMM():
 fsents = cess_esp.tagged_sents()
 rsents = reduce(fsents)
 shuffle(rsents)
+
+
+#evaluateTnT()
+#evaluateHMM()
+
+
 
 #crossValidationTnT()
 crossValidationHMM()
