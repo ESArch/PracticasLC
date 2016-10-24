@@ -65,12 +65,12 @@ rsents = reduce(fsents)
 shuffle(rsents)
 
 
-#evaluateTnT()
-#evaluateHMM()
+evaluateTnT()
+evaluateHMM()
 
 
 
-#crossValidationTnT()
+crossValidationTnT()
 crossValidationHMM()
 
 
